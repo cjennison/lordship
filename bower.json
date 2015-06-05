@@ -1,0 +1,14 @@
+{
+  "name": "HelloIonic",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "pace": "~1.0.2",
+    "angular-bootstrap": "~0.13.0",
+    "animate.css": "~3.3.0",
+    "progressbar.js": "~0.8.1"
+  }
+}

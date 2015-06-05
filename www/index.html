@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html ng-app="lordship">
+  <head>
+    <meta charset="utf-8">
+    <title>Lordship</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+
+
+    <link href="css/bootstrap.min.css" rel='stylesheet'>
+    <link href="lib/animate.css/animate.css" rel="stylesheet">
+
+
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- Needed for Cordova/PhoneGap (will be a 404 during development) -->
+    <script src="cordova.js"></script>
+    <script src='lib/jquery/dist/jquery.min.js'></script>
+    <script src='lib/angular-bootstrap/ui-bootstrap.min.js'></script>
+    <script src='lib/angular-bootstrap/ui-bootstrap-tpls.min.js'></script>
+    <script src="lib/progressbar.js/dist/progressbar.min.js"></script>
+    
+    <!-- Tools -->
+    <script src='js/tools/time.js'></script>
+
+    <!-- Classes -->
+    <script src='js/classes/event.js'></script>
+    <script src='js/classes/castle.js'></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/controllers/HomeCtrl.js"></script>
+    <script src="js/controllers/VenueCtrl.js"></script>
+    <script src="js/controllers/venues/VenueFarmCtrl.js"></script>
+    <script src="js/controllers/venues/VenueHuntingCtrl.js"></script>
+
+  </head>
+  <body>
+
+    <div ng-controller="HomeCtrl" ng-show='state=="state_HOME"'>
+      <ion-side-menus>
+        <!-- Center content -->
+        <ion-side-menu-content>
+         <ion-header-bar class="bar-dark">
+            <h1 class="title">Lordship</h1>
+          </ion-header-bar>
+          <ion-content>
+
+          <div class='row'>
+            <div class='col-sm-5'>
+              <h1>Castle {{currentCastle.NAME}}</h1>
+              <h3>Lord {{currentCastle.LORD}}</h3>
+            </div>
+          </div>
+
+
+          <ion-list>
+            <ion-item>
+              <button ng-click='goto_Venues()' class='button button-block button-positive'>
+                <i class="icon ion-flag"></i>
+                Venues 
+              </button>
+            </ion-item>
+            <ion-item>
+              <button ng-click='' class='button button-block button-positive'>
+                <i class="icon ion-beer"></i>
+                Stats
+              </button>
+            </ion-item>
+            <ion-item>
+              <button ng-click='' class='button button-block button-positive'>
+                <i class="icon ion-settings"></i>
+                Options
+              </button>
+            </ion-item>
+          </ion-list>
+          
+          </ion-content>
+        </ion-side-menu-content>
+      </ion-side-menus>
+    </div>
+
+    <div ng-controller="VenueCtrl" ng-show='state=="state_VENUES"'>
+      <ion-side-menus>
+        <!-- Center content -->
+        <ion-side-menu-content>
+         <ion-header-bar class="bar-dark">
+          <button class="button button-icon" ng-click="toggleNavigation()">
+            <i class="icon ion-navicon"></i>
+          </button>
+          
+            <h3 class="title" style='font-size:13px;'>Venues</h3>
+          <button class="button button-icon" ng-click="toggleEvents()">
+            <i class="icon ion-alert"><span class="badge badge-assertive" ng-hide="newEvents == 0">{{newEvents}}</span></i>
+          </button>
+          </ion-header-bar>
+          <ion-content>
+
+          <ion-list>
+            <ion-item>
+            <!-- FARM -->
+              <div ng-controller='VenueFarmCtrl' id='venue_Farm'>
+                <div class='content'>
+                  <div class='row'>
+                    <div class='col-sm-2'><h1 class='title'>Farm</h1></div>
+                    <div class='col-sm-2'><p>Hours: {{hours[0]}}:00 AM to {{hours[1]-12}}:00 PM</p></div>
+                    <div class='col-sm-2'><p ng-show="working">Working</p><p ng-show="!working">Resting</p></div>
+                    <div class='col-sm-2 col-sm-offset-4'>
+                      <button class='btn btn-default' ng-click="showUpgrades()">Upgrades</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class='col-sm-2 col-sm-offset-2'>
+                      <button class='btn btn-primary' ng-disabled="!working" ng-click="work()">Work</button>
+                    </div> 
+                    <div class='col-sm-8' style='width:100%;'>
+                      <div id="venue-farm-bar" style='height:20px;'></div>
+                    </div>
+                  </div>
+
+                  <div class='row'>
+                    <div class='col-sm-offset-4 col-sm-2'>{{currentCastle.VENUES.FARM.farms}}/{{currentCastle.LIMITS.farms}} Farms <button ng-click='buyFarm()' class='btn btn-default' ng-disabled="coin < farmCost">Buy 1</button><span> {{farmCost}}c</span></div>
+                    <div class='col-sm-2'>{{currentCastle.VENUES.FARM.workers}}/{{maxWorkers}} Workers <button ng-click='buyWorker()' class='btn btn-default' ng-disabled="coin < workerCost">Buy 1</button><span> {{workerCost}}c</span></div>
+                  </div>
+
+                </div>
+              </div>
+              <!-- END FARM -->
+            </ion-item>
+            <ion-item>
+            <!-- HUNTER -->
+              <div ng-controller='VenueHuntingCtrl' id='venue_Hunt'>
+                <div class='content' >
+                  <div class='row'>
+                    <div class='col-sm-2'><h1 class='title' style='white-space:normal'>Hunting Guild</h1></div>
+                    <div class='col-sm-4 col-sm-offset-4' ng-hide="purchased"><h1 class='title'>50c</h1></div>
+                  </div>
+                  <div ng-show='purchased'>
+                    <div class="row">
+                     <div class='col-sm-2 col-sm-offset-2'>
+                        <button class='btn btn-primary' ng-disabled="!working" ng-click="work()">Go Hunting</button>
+                      </div> 
+                      <div class='col-sm-8' style='width:100%;'>
+                        <div id="venue-hunt-bar" style='height:20px;'></div>
+                      </div>
+                    </div>
+
+                    <div class='row'>
+                     
+                    </div>
+                  </div>
+                  <div ng-show='!purchased'>
+                    <div class='row'>
+                      <div class='col-sm-offset-4 col-sm-4'>Send hunters out to gather pelts. Sell pelts to the castle.</div>
+                    </div>
+                    <div class='row'>
+                      <div class='col-sm-offset-6 col-sm-4'><button class='btn btn-default' ng-disabled="currentCastle.PLAYER.coin < 50" ng-click='purchase()'>Purchase</button></div>
+                    </div>
+                  </div>
+                  
+
+                </div>
+               
+              </div>
+              <!-- END HUNTER -->
+            </ion-item>
+          </ion-list>
+          
+          </ion-content>
+        </ion-side-menu-content>
+
+        <!-- Left menu -->
+        <ion-side-menu side="left">
+          <ion-header-bar class="bar-dark">
+            <h1 class="title">Navigation</h1>
+          </ion-header-bar>
+          <ion-content scroll="false">
+            <ion-list>
+              <ion-item ng-click="goto_Home(true)">
+              Castle
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-side-menu>
+
+        <!-- Right menu -->
+        <ion-side-menu side="right">
+          <ion-header-bar class="bar-dark">
+            <h1 class="title">Events</h1>
+          </ion-header-bar>
+          <ion-content scroll="false">
+            <ion-list>
+              <ion-item ng-repeat="event in events | reverse">
+                <h2 class='title'>{{event.title}}</h2>
+                <p>{{event.text1}}</p>
+                <p>{{event.text2}}</p>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-side-menu>
+      </ion-side-menus>
+    </div>
+
+    <div class="bar bar-footer bar-balanced">
+      <div class="title"><i>Castle: {{currentCastle.NAME}}</i> Time: {{display.time}} Coin: {{currentCastle.PLAYER.coin}} Food: {{currentCastle.VENUES.FARM.food}} </div>
+    </div>
+
+  </body>
+</html>

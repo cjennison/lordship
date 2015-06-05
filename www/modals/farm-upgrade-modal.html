@@ -1,0 +1,33 @@
+
+
+  <div class="modal">
+
+    <!-- Modal header bar -->
+    <ion-header-bar class="bar-secondary">
+      <h1 class="title">Upgrades</h1>
+      <button class="button button-clear button-positive" ng-click="closeUpgrades()">Cancel</button>
+    </ion-header-bar>
+
+    <!-- Modal content area -->
+    <ion-content>
+
+      <ion-list>
+        <ion-item>
+          <div class='row'>
+            <div class='col-sm-4'>
+              <h1 class='title'>Overseer</h1>
+            </div>
+            
+          </div>
+          <p>Runs your farms for you.</p>
+          <p>
+            Cost: 10c
+          </p>
+          
+          <button class='btn btn-default' ng-disabled='has_overseer || coin < 10' ng-click='purchaseOverseer()'>Buy</button> <span ng-show='has_overseer'> Owned </span>
+        </ion-item>
+      </ion-list>
+
+    </ion-content>
+
+  </div>
